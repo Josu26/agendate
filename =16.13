@@ -1,7 +1,7 @@
 + react-dom@18.2.0
-updated 1 package, moved 3 packages and audited 125 packages in 5.05s
+updated 1 package, moved 3 packages and audited 296 packages in 8.885s
 
-9 packages are looking for funding
+19 packages are looking for funding
   run `npm fund` for details
 
 found 5 vulnerabilities (1 moderate, 2 high, 2 critical)
