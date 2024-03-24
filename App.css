@@ -1,0 +1,79 @@
+/* Estilos globales */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* Estilos del encabezado */
+.header {
+  background-color: #ffffff; /* Blanco */
+  padding: 5px 20px; /* Reducir el padding vertical y horizontal */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo-container {
+  text-align: center;
+}
+
+.logo {
+  width: 150px; /* Ajustar según el tamaño de tu logo */
+}
+
+.header-icons {
+  display: flex;
+}
+
+.icon {
+  width: 30px; /* Ajustar el tamaño de los iconos */
+  margin-left: 10px; /* Agregar espacio entre los iconos */
+}
+
+/* Estilos del contenido */
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #5d8e28;
+}
+
+.background {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  width: 30%;
+  max-width: 300px;
+}
+
+.white-box {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+/* Estilos de los botones */
+.button-box {
+  margin-top: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.button {
+  background-color: #5d8e28;
+  color: #ffffff;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin: 2px 0;
+}
+
+.button:hover {
+  background-color: #4b7320;
+}
