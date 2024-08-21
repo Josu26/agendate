@@ -1,0 +1,333 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Citas</title>
+    <style>
+        .appointments-section {
+            max-width: 800px;
+            margin: auto;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+            overflow-y: auto;
+        }
+
+        .appointments-section header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .appointments-form {
+            margin-top: 20px;
+        }
+
+        .appointments-form form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .appointments-form label {
+            font-weight: bold;
+        }
+
+        .appointments-form input, .appointments-form textarea {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .appointments-form input[type="submit"] {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .appointments-form input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        .calendar-button {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .calendar-button button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .calendar-button button:hover {
+            background-color: #0056b3;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 1000px;
+            border-radius: 10px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .calendar {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .calendar header {
+            background-color: #007bff;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .calendar table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .calendar th,
+        .calendar td {
+            padding: 10px;
+            text-align: center;
+        }
+
+        .calendar th {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .calendar td {
+            background-color: #e9ecef;
+            border: 1px solid #ddd;
+            cursor: pointer;
+        }
+
+        .calendar td:hover {
+            background-color: #ddd;
+        }
+
+        .calendar .today {
+            background-color: #ffeb3b;
+        }
+
+        .navigation-buttons {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .navigation-buttons button {
+            margin: 0 5px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+
+        .navigation-buttons button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="appointments-section">
+        <header>
+            <h1>Gestión de Citas</h1>
+        </header>
+        
+        <div class="appointments-form">
+            <h2>Añadir Cita</h2>
+            <form id="add-appointment-form">
+                <label for="title">Título de la Cita:</label>
+                <input type="text" id="title" name="title" required>
+                
+                <label for="datetime">Fecha y Hora:</label>
+                <input type="datetime-local" id="datetime" name="datetime" required>
+                
+                <label for="description">Descripción:</label>
+                <textarea id="description" name="description" rows="4" required></textarea>
+                
+                <input type="submit" value="Añadir Cita">
+            </form>
+        </div>
+
+        <div class="calendar-button">
+            <button onclick="openCalendarModal()">Ver Calendario</button>
+        </div>
+
+        <!-- Modal del Calendario -->
+        <div id="calendarModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeCalendarModal()">&times;</span>
+                <div class="calendar">
+                    <header>
+                        <h1 id="calendar-title">Junio 2024</h1>
+                    </header>
+                    <table id="calendar-table">
+                        <thead>
+                            <tr>
+                                <th>Dom</th>
+                                <th>Lun</th>
+                                <th>Mar</th>
+                                <th>Mié</th>
+                                <th>Jue</th>
+                                <th>Vie</th>
+                                <th>Sáb</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Días del mes se insertarán aquí -->
+                        </tbody>
+                    </table>
+                    <div class="navigation-buttons">
+                        <button id="prevMonth">Mes Anterior</button>
+                        <button id="nextMonth">Mes Siguiente</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openCalendarModal() {
+            document.getElementById('calendarModal').style.display = 'block';
+        }
+
+        function closeCalendarModal() {
+            document.getElementById('calendarModal').style.display = 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const calendarTitle = document.getElementById('calendar-title');
+            const calendarTable = document.getElementById('calendar-table').getElementsByTagName('tbody')[0];
+            let currentMonth = new Date().getMonth();
+            let currentYear = new Date().getFullYear();
+
+            function updateCalendar() {
+                calendarTable.innerHTML = '';
+                const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+                calendarTitle.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+
+                const firstDay = new Date(currentYear, currentMonth, 1);
+                const lastDay = new Date(currentYear, currentMonth + 1, 0);
+
+                const daysInWeek = 7;
+                let date = new Date(firstDay);
+                date.setDate(date.getDate() - date.getDay());
+
+                while (date <= lastDay || date.getDay() !== 0) {
+                    const row = document.createElement('tr');
+                    for (let i = 0; i < daysInWeek; i++) {
+                        const cell = document.createElement('td');
+                        if (date.getMonth() === currentMonth) {
+                            cell.textContent = date.getDate();
+                            cell.addEventListener('click', () => showDayAppointments(date));
+                            if (date.toDateString() === new Date().toDateString()) {
+                                cell.classList.add('today');
+                            }
+                        }
+                        row.appendChild(cell);
+                        date.setDate(date.getDate() + 1);
+                    }
+                    calendarTable.appendChild(row);
+                }
+            }
+
+            document.getElementById('prevMonth').addEventListener('click', function() {
+                if (currentMonth === 0) {
+                    currentMonth = 11;
+                    currentYear--;
+                } else {
+                    currentMonth--;
+                }
+                updateCalendar();
+            });
+
+            document.getElementById('nextMonth').addEventListener('click', function() {
+                if (currentMonth === 11) {
+                    currentMonth = 0;
+                    currentYear++;
+                } else {
+                    currentMonth++;
+                }
+                updateCalendar();
+            });
+
+            const modal = document.getElementById('calendarModal');
+            const span = document.getElementsByClassName('close')[0];
+
+            function showDayAppointments(date) {
+                const dayAppointments = document.getElementById('day-appointments');
+                dayAppointments.innerHTML = `<p>Citas del día ${date.toLocaleDateString()}</p>`;
+                modal.style.display = 'block';
+            }
+
+            span.onclick = function() {
+                modal.style.display = 'none';
+            }
+
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                }
+            }
+
+            updateCalendar();
+        });
+
+        document.getElementById('add-appointment-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const title = document.getElementById('title').value;
+            const datetime = document.getElementById('datetime').value;
+            const description = document.getElementById('description').value;
+            console.log('Añadir Cita:', { title, datetime, description });
+            // Aquí puedes agregar la lógica para enviar la cita al servidor
+        });
+    </script>
+</body>
+</html>

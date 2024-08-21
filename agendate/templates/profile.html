@@ -1,0 +1,465 @@
+{% load static %}
+<div class="profile-section">
+    <header>
+        <h1>Gestión de Perfil</h1>
+    </header>
+    <form id="profile-form" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <div class="section-header" onclick="toggleSection('personal-info')">
+                <h2>Información Personal</h2>
+                <p>Nombre, Apellidos, Fecha de Nacimiento, Género, Número de Teléfono, Dirección</p>
+            </div>
+            <div id="personal-info" class="collapsible-content">
+                <div class="grid-container">
+                    <div class="grid-item">
+                        <label for="first-name">Nombre:</label>
+                        <input type="text" id="first-name" name="first_name">
+                    </div>
+                    <div class="grid-item">
+                        <label for="last-name">Apellidos:</label>
+                        <input type="text" id="last-name" name="last_name">
+                    </div>
+                    <div class="grid-item">
+                        <label for="dob">Fecha de Nacimiento:</label>
+                        <input type="date" id="dob" name="dob">
+                    </div>
+                    <div class="grid-item">
+                        <label for="gender">Género:</label>
+                        <select id="gender" name="gender">
+                            <option value="male">Masculino</option>
+                            <option value="female">Femenino</option>
+                            <option value="other">Otro</option>
+                        </select>
+                    </div>
+                    <div class="grid-item">
+                        <label for="phone">Número de Teléfono:</label>
+                        <input type="tel" id="phone" name="phone" value="{{ user.phone }}" required>
+                    </div>
+                    <div class="grid-item">
+                        <label for="street">Calle:</label>
+                        <input type="text" id="street" name="street">
+                    </div>
+                    <div class="grid-item">
+                        <label for="house-number">Número:</label>
+                        <input type="text" id="house-number" name="house_number">
+                    </div>
+                    <div class="grid-item">
+                        <label for="postal-code">Código Postal:</label>
+                        <input type="text" id="postal-code" name="postal_code">
+                    </div>
+                    <div class="grid-item">
+                        <label for="country">País:</label>
+                        <input type="text" id="country" name="country">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="section-header" onclick="toggleSection('account-details')">
+                <h2>Detalles de Cuenta</h2>
+                <p>Nombre de Usuario, Correo Electrónico, Contraseña</p>
+            </div>
+            <div id="account-details" class="collapsible-content">
+                <div class="grid-container">
+                    <div class="grid-item">
+                        <label for="username">Nombre de Usuario:</label>
+                        <input type="text" id="username" name="username" value="{{ user.username }}" required>
+                    </div>
+                    <div class="grid-item">
+                        <label for="email">Correo Electrónico:</label>
+                        <input type="email" id="email" name="email" value="{{ user.email }}" required>
+                    </div>
+                    <div class="grid-item">
+                        <label for="password">Nueva Contraseña:</label>
+                        <input type="password" id="password" name="password">
+                    </div>
+                    <div class="grid-item">
+                        <label for="confirm-password">Confirmar Contraseña:</label>
+                        <input type="password" id="confirm-password" name="confirm_password">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="section-header" onclick="toggleSection('profile-photo')">
+                <h2>Foto de Perfil</h2>
+                <p>Subir Nueva Foto</p>
+            </div>
+            <div id="profile-photo" class="collapsible-content">
+                <div class="grid-container">
+                    <div class="grid-item">
+                        <label for="profile-picture">Subir Nueva Foto:</label>
+                        <input type="file" id="profile-picture" name="profile_picture">
+                    </div>
+                    <div class="grid-item">
+                        {% if user.profile_picture_url %}
+                            <img src="{{ user.profile_picture_url }}" alt="Profile Picture" class="avatar" width="100">
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="section-header" onclick="toggleSection('preferences')">
+                <h2>Preferencias</h2>
+                <p>Idioma Preferido, Preferencias de Comunicación, Zona Horaria</p>
+            </div>
+            <div id="preferences" class="collapsible-content">
+                <div class="grid-container">
+                    <div class="grid-item">
+                        <label for="language">Idioma Preferido:</label>
+                        <select id="language" name="language">
+                            <option value="es">Español</option>
+                            <option value="en">Inglés</option>
+                        </select>
+                    </div>
+                    <div class="grid-item">
+                        <label for="communication">Preferencias de Comunicación:</label>
+                        <select id="communication" name="communication">
+                            <option value="email">Email</option>
+                            <option value="sms">SMS</option>
+                        </select>
+                    </div>
+                    <div class="grid-item">
+                        <label for="timezone">Zona Horaria:</label>
+                        <input type="text" id="timezone" name="timezone" value="{{ user.timezone }}" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="section-header" onclick="toggleSection('notifications-history')">
+                <h2>Historial y Notificaciones</h2>
+                <p>Configuración de Recordatorios, Alertas de Nuevas Ofertas</p>
+            </div>
+            <div id="notifications-history" class="collapsible-content">
+                <div class="grid-container">
+                    <div class="grid-item">
+                        <label for="notifications">Configuración de Recordatorios:</label>
+                        <select id="notifications" name="notifications">
+                            <option value="1_day">1 día antes</option>
+                            <option value="2_days">2 días antes</option>
+                            <option value="1_week">1 semana antes</option>
+                        </select>
+                    </div>
+                    <div class="grid-item">
+                        <label for="offers">Alertas de Nuevas Ofertas:</label>
+                        <select id="offers" name="offers">
+                            <option value="yes">Sí</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="section-header" onclick="toggleSection('documents-files')">
+                <h2>Documentos y Archivos</h2>
+                <p>Subir Documentos</p>
+            </div>
+            <div id="documents-files" class="collapsible-content">
+                <div class="grid-container">
+                    <div class="grid-item">
+                        <label for="documents">Subir Documentos:</label>
+                        <input type="file" id="documents" name="documents[]" multiple>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="section-header" onclick="toggleSection('security-privacy')">
+                <h2>Seguridad y Privacidad</h2>
+                <p>Configuración de Privacidad, Verificación de Identidad</p>
+            </div>
+            <div id="security-privacy" class="collapsible-content">
+                <div class="grid-container">
+                    <div class="grid-item">
+                        <label for="privacy">Configuración de Privacidad:</label>
+                        <select id="privacy" name="privacy">
+                            <option value="public">Público</option>
+                            <option value="private">Privado</option>
+                            <option value="friends">Solo amigos</option>
+                        </select>
+                    </div>
+                    <div class="grid-item">
+                        <label for="2fa">Verificación de Identidad:</label>
+                        <select id="2fa" name="2fa">
+                            <option value="enabled">Habilitado</option>
+                            <option value="disabled">Deshabilitado</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="section-header" onclick="toggleSection('integrations')">
+                <h2>Integraciones</h2>
+                <p>Integraciones con Redes Sociales, Sincronización de Calendarios</p>
+            </div>
+            <div id="integrations" class="collapsible-content">
+                <div class="grid-container">
+                    <div class="grid-item">
+                        <label for="social">Integraciones con Redes Sociales:</label>
+                        <input type="text" id="social" name="social" value="{{ user.social }}" required>
+                    </div>
+                    <div class="grid-item">
+                        <label for="calendar">Sincronización de Calendarios:</label>
+                        <input type="text" id="calendar" name="calendar" value="{{ user.calendar }}" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="section-header" onclick="toggleSection('advanced-options')">
+                <h2>Opciones Avanzadas</h2>
+                <p>Programación Inteligente, Preferencias de Servicios</p>
+            </div>
+            <div id="advanced-options" class="collapsible-content">
+                <div class="grid-container">
+                    <div class="grid-item">
+                        <label for="smart-scheduling">Programación Inteligente:</label>
+                        <select id="smart-scheduling" name="smart_scheduling">
+                            <option value="enabled">Habilitado</option>
+                            <option value="disabled">Deshabilitado</option>
+                        </select>
+                    </div>
+                    <div class="grid-item">
+                        <label for="services">Preferencias de Servicios:</label>
+                        <input type="text" id="services" name="services" value="{{ user.services }}" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit">Actualizar Perfil</button>
+    </form>
+    <button type="button" class="logout-button" onclick="logout()">Cerrar Sesión</button>
+</div>
+
+<style>
+    :root {
+        --primary-color: #c6c3c3; /* Aligned with the dashboard's primary color */
+        --secondary-color: #ffffff;
+        --black-color: #000000;
+        --info-color: #17A2B8;
+        --background-color: rgba(255, 255, 255, 0.9);
+        --text-color: #333;
+        --header-color: #c6c3c3;
+        --border-color: #ccc;
+        --section-padding: 20px;
+    }
+
+    body {
+        display: flex;
+        background-image: url("{% static 'assets/background.png' %}");
+        background-position: center;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        backdrop-filter: blur(0px);
+        overflow: hidden; /* Ensures no scrollbars appear */
+    }
+
+    .profile-section {
+        max-width: 1200px;
+        margin: auto;
+        background: var(--background-color);
+        padding: var(--section-padding);
+        border-radius: 15px;
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+        overflow-y: auto;
+    }
+
+    .profile-section header {
+        text-align: center;
+        margin-bottom: 20px; /* Adjusted for more space */
+        background-color: var(--header-color);
+        padding: 10px;
+        border-radius: 10px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        padding: 10px;
+        background-color: var(--background-color);
+    }
+
+    .section-header {
+        background-color: var(--primary-color);
+        color: var(--text-color);
+        padding: 10px;
+        border-radius: 10px;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: background-color 0.3s ease;
+    }
+
+    .section-header p {
+        margin: 0;
+        font-size: 0.9em;
+    }
+
+    .section-header:hover {
+        background-color: var(--info-color);
+    }
+
+    .collapsible-content {
+        display: none;
+        overflow: hidden;
+        transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+        padding: 0px 0;
+    }
+
+    .collapsible-content.active {
+        display: block;
+    }
+
+    .grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+    }
+
+    .grid-item {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .profile-section label {
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: var(--text-color);
+    }
+
+    .profile-section input,
+    .profile-section select {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border-radius: 5px;
+        border: 1px solid var(--border-color);
+        background-color: var(--secondary-color);
+    }
+
+    .profile-section button {
+        width: 100%;
+        margin: 20px 0;
+        padding: 15px;
+        border-radius: 20px;
+        background-color: var(--primary-color);
+        color: var(--black-color);
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s;
+    }
+
+    .profile-section button:hover {
+        background-color: var(--info-color);
+        color: var(--secondary-color);
+    }
+
+    .profile-section .avatar {
+        display: block;
+        margin: 10px auto;
+        border-radius: 50%;
+    }
+
+    .logout-button {
+        background-color: var(--info-color);
+        color: var(--secondary-color);
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        display: block;
+        margin: 20px auto;
+        width: 200px;
+        text-align: center;
+    }
+
+    .logout-button:hover {
+        background-color: var(--primary-color);
+        color: var(--black-color);
+    }
+</style>
+
+<script>
+    document.getElementById('profile-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        const response = await fetch("{% url 'update_profile' %}", {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken
+            },
+            body: formData
+        });
+        const result = await response.json();
+        alert(result.message || result.error);
+    });
+
+    async function logout() {
+        try {
+            const response = await fetch("{% url 'logout' %}", {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            });
+            if (response.ok) {
+                window.location.href = '/';
+            } else {
+                alert('Error al cerrar sesión');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error al cerrar sesión');
+        }
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function toggleSection(sectionId) {
+        const section = document.getElementById(sectionId);
+        section.classList.toggle('active');
+    }
+
+    // Initialize sections to be collapsed
+    document.addEventListener("DOMContentLoaded", () => {
+        const sections = document.querySelectorAll(".collapsible-content");
+        sections.forEach(section => {
+            section.classList.remove('active');
+        });
+    });
+</script>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Business Information</title>
+</head>
+<body>
+    <form id="business-info-form">
+        <label for="business_name">Business Name:</label>
+        <input type="text" id="business_name" name="business_name" required><br>
+        <label for="business_description">Business Description:</label>
+        <input type="text" id="business_description" name="business_description" required><br>
+        <label for="services">Services:</label>
+        <input type="text" id="services" name="services" required><br>
+        <label for="operating_hours">Operating Hours:</label>
+        <input type="text" id="operating_hours" name="operating_hours" required><br>
+        <label for="preferred_language">Preferred Language:</label>
+        <select id="preferred_language" name="preferred_language">
+            <option value="es">Spanish</option>
+            <option value="en">English</option>
+        </select><br>
+        <button type="submit">Save</button>
+    </form>
+
+    <script>
+        document.getElementById('business-info-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData.entries());
+            fetch('/save_business_info/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Business information saved successfully.');
+                } else {
+                    alert('Failed to save business information.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+</body>
+</html>

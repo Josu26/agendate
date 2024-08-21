@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comunicaciones - AgenDate</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: "Poppins", sans-serif;
+            background-color: #f0f0f0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .content-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align items at the top */
+            height: 73vh;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .communications-container {
+            width: 100%;
+            max-width: 800px;
+            height: 450px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
+            margin-top: 5px; /* 10px from the top */
+        }
+
+        .message-list {
+            border: 1px solid #ccc;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            flex: 1;
+            overflow-y: auto;
+            height: calc(100% - 80px); /* Adjusted height */
+        }
+
+        .message-item {
+            background-color: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .message-item:hover {
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .message-item h3 {
+            margin: 0;
+            font-size: 1.2em;
+        }
+
+        .message-item p {
+            margin: 5px 0;
+            font-size: 0.9em;
+        }
+
+        .message-item button {
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .message-item button:hover {
+            background-color: #0056b3;
+        }
+
+        .message-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .message-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .message-list::-webkit-scrollbar-thumb {
+            background: #888;
+        }
+
+        .message-list::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="content-container">
+        <div class="communications-container">
+            <header>
+                <h1>Comunicaciones</h1>
+            </header>
+            <div class="message-list">
+                <div class="message-item">
+                    <h3>Título del Mensaje</h3>
+                    <p>Contenido del Mensaje</p>
+                    <div>
+                        <button>Responder</button>
+                    </div>
+                </div>
+                <!-- Repeat this structure for each message -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const contentContainer = document.querySelector('.content-container');
+
+            const sidebarCollapsed = false;
+            if (sidebarCollapsed) {
+                contentContainer.classList.add('collapsed');
+            }
+        });
+    </script>
+</body>
+</html>

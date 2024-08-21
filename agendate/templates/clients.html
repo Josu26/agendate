@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clientes - AgenDate</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: "Poppins", sans-serif;
+            background-color: #f0f0f0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .content-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align items at the top */
+            height: 73vh;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .clients-container {
+            width: 100%;
+            max-width: 800px;
+            height: 450px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            box-sizing: border-box;
+            margin-top: 5px; /* 10px from the top */
+        }
+
+        .client-list {
+            border: 1px solid #ccc;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            flex: 1;
+            overflow-y: auto;
+            height: calc(100% - 80px); /* Adjusted height */
+        }
+
+        .client-item {
+            background-color: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .client-item:hover {
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="content-container">
+        <div class="clients-container">
+            <header>
+                <h1>Clientes</h1>
+            </header>
+            <div class="client-list" id="client-list">
+                <!-- Client items will appear here -->
+                <div class="client-item">
+                    <h3>Nombre del Cliente</h3>
+                    <p>Información de Contacto</p>
+                    <button>Editar</button>
+                    <button>Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,883 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgenDate Dashboard</title>
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins&display=swap">
+    <style>
+        /* Your CSS styles, including sidebar and collapsible logic */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        :root {
+            --primary-color: #c6c3c3;
+            --second-color: #ffffff;
+            --black-color: #000000;
+        }
+
+        body {
+            display: flex;
+            background-image: url("{% static 'assets/background.png' %}");
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            backdrop-filter: blur(0px);
+        }
+
+        .sidebar {
+            width: 250px;
+            background: rgba(255, 255, 255, 0.9);
+            height: calc(100vh - 40px);
+            padding: 20px;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+            transition: width 0.3s;
+            position: fixed;
+            overflow: hidden;
+            border-radius: 25px;
+            margin: 20px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .sidebar.collapsed {
+            width: 80px;
+            align-items: center;
+        }
+
+        .sidebar img {
+            height: 140px;
+            display: block;
+            margin: 0 auto 20px;
+            transition: height 0.3s, margin 0.3s, content 0.3s;
+        }
+
+        .sidebar.collapsed img {
+            height: 50px;
+            margin: 20px;
+        }
+
+        .sidebar.collapsed .logo {
+            content: url("{% static 'assets/logo2.png' %}");
+        }
+
+        .toggle-btn {
+            display: block;
+            margin: 10px auto;
+            font-size: 24px;
+            cursor: pointer;
+            transition: margin 0.3s;
+            text-align: center;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            width: 100%;
+        }
+
+        .sidebar ul li {
+            margin: 20px 0;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: center;
+        }
+
+        .sidebar ul li a {
+            text-decoration: none;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: color 0.3s;
+            justify-content: flex-start;
+            width: 100%;
+        }
+
+        .sidebar.collapsed ul li a {
+            justify-content: center;
+        }
+
+        .sidebar ul li a:hover {
+            color: var(--primary-color);
+        }
+
+        .sidebar ul li i {
+            font-size: 24px;
+        }
+
+        .sidebar ul li span {
+            transition: opacity 0.3s;
+        }
+
+        .sidebar.collapsed ul li span {
+            opacity: 0;
+            visibility: hidden;
+            width: 0;
+            transition: opacity 0.3s, width 0.3s;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            width: calc(100% - 250px);
+            transition: margin-left 0.3s, width 0.3s;
+            overflow-y: auto; /* Enable vertical scrolling */
+        }
+
+        .main-content.collapsed {
+            margin-left: 80px;
+            width: calc(100% - 80px);
+        }
+
+        .main-content::-webkit-scrollbar {
+            width: 12px; /* Width of the scrollbar */
+        }
+
+        .main-content::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.9); /* Track color */
+            border-radius: 10px;
+        }
+
+        .main-content::-webkit-scrollbar-thumb {
+            background-color: var(--primary-color); /* Scrollbar color */
+            border-radius: 10px;
+            border: 3px solid rgba(255, 255, 255, 0.9); /* Space around the scrollbar */
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            transition: width 0.3s; /* Added transition for smooth width adjustment */
+            overflow-y: auto;
+            overflow-x: auto;
+        }
+
+        .container.collapsed {
+            width: calc(100% - 270px); /* Adjusted width when sidebar is collapsed */
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+            width: 100%;
+            transition: width 0.3s;
+        }
+
+        .header-content.collapsed {
+            width: calc(100% - 0px); /* Adjust width to occupy full space when sidebar is collapsed */
+        }
+
+        .logout-btn {
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 25px;
+            padding: 10px 20px;
+            cursor: pointer;
+            color: var(--black-color);
+            font-size: 16px;
+        }
+
+        .logout-btn:hover {
+            background-color: var(--second-color);
+        }
+
+        .section {
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .section h2 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            cursor: pointer;
+            background-color: var(--primary-color);
+            padding: 10px;
+            border-radius: 10px;
+            width: 100%;
+        }
+
+        .section-content {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .notification-item, .tip-item, .action-item, .user-summary {
+            background: rgba(230, 230, 230, 0.9);
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .notification-item p, .tip-item p, .action-item p, .user-summary p {
+            margin: 5px 0;
+        }
+
+        .overview, .notifications, .tips, .quick-actions, .user-specific {
+            margin-bottom: 20px;
+        }
+
+        .reviews {
+            display: none;
+            position: fixed;
+            right: -270px;
+            top: 125px;
+            width: 250px;
+            height: calc(100% - 145px);
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            overflow-y: auto;
+            z-index: 1000;
+            border-radius: 20px;
+            transition: right 0.3s, height 0.3s;
+        }
+
+        .reviews h2 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            background-color: var(--primary-color);
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .review-item {
+            background: rgba(230, 230, 230, 0.9);
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .review-item p {
+            margin: 5px 10px;
+        }
+
+        @media (max-width: 768px) {
+            .toggle-btn {
+                display: block;
+            }
+
+            .sidebar {
+                width: 80px;
+            }
+
+            .main-content {
+                margin-left: 80px;
+                width: calc(100% - 80px);
+            }
+
+            .sidebar img {
+                height: 50px;
+                margin: 0 auto;
+            }
+
+            .sidebar ul li span {
+                opacity: 0;
+                visibility: hidden;
+                width: 0;
+            }
+
+            .sidebar.collapsed ul li a {
+                justify-content: center;
+            }
+
+            .reviews {
+                width: 200px;
+            }
+
+            .reviews h2 {
+                font-size: 1.2em;
+            }
+
+            .review-item {
+                padding: 8px;
+            }
+        }
+
+        /* Ensure the calendar section is large enough */
+        .calendar-section {
+            width: 100%;
+            min-height: 600px; /* Adjust the height as necessary */
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 1200px;
+            border-radius: 10px;
+            position: relative;
+            transition: all 0.3s ease-in-out; /* Smooth transition for fullscreen */
+        }
+
+        .modal-content.fullscreen {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            border-radius: 0;
+        }
+
+        .close, .maximize, .minimize {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        .maximize {
+            right: 50px;
+        }
+
+        .minimize {
+            right: 90px;
+        }
+
+        .close:hover, .maximize:hover, .minimize:hover {
+            color: black;
+        }
+
+        .calendar {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .calendar header {
+            background-color: #007bff;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .calendar table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 18px;
+        }
+
+        .calendar th,
+        .calendar td {
+            padding: 15px;
+            text-align: center;
+        }
+
+        .calendar th {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .calendar td {
+            background-color: #e9ecef;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .calendar td:hover {
+            background-color: #ddd;
+        }
+
+        .calendar .today {
+            background-color: #ffeb3b;
+        }
+
+        .navigation-buttons {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .navigation-buttons button {
+            margin: 0 5px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+
+        .navigation-buttons button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <img class="logo" src="{% static 'assets/logo.png' %}" alt="Logo">
+        <span class="toggle-btn" id="toggle-sidebar"><i class='bx bx-menu'></i></span>
+        <ul class="menu">
+            <li><a href="#" data-section="dashboard"><i class='bx bx-home' data-section="dashboard"></i> <span>Dashboard</span></a></li>
+            <li><a href="#" data-section="profile"><i class='bx bx-user' data-section="profile"></i> <span>Perfil</span></a></li>
+            <li><a href="#" data-section="appointments"><i class='bx bx-calendar' data-section="appointments"></i> <span>Citas</span></a></li>
+            <li><a href="#" data-section="clients"><i class='bx bx-group' data-section="clients"></i> <span>Clientes</span></a></li>
+            <li><a href="#" data-section="communications"><i class='bx bx-message' data-section="communications"></i> <span>Comunicaciones</span></a></li>
+            <li><a href="#" data-section="chatbot"><i class='bx bx-bot' data-section="chatbot"></i> <span>Chatbot</span></a></li>
+            <li><a href="#" data-section="reports"><i class='bx bx-bar-chart' data-section="reports"></i> <span>Reportes</span></a></li>
+            <li><a href="#" data-section="settings"><i class='bx bx-cog' data-section="settings"></i> <span>Configuración</span></a></li>
+            <li><a href="#" data-section="help"><i class='bx bx-help-circle' data-section="help"></i> <span>Ayuda</span></a></li>
+        </ul>
+        
+    </div>
+
+    <div class="main-content">
+        <div class="header-content">
+            <h1 id="header-title">Dashboard</h1>
+            <button class="logout-btn" id="logout-btn">Cerrar Sesión</button>
+        </div>
+        <div id="content" class="container">
+            {% block content %}
+            <!-- This will be dynamically updated -->
+            {% endblock %}
+        </div>
+    </div>
+
+    <div class="reviews" id="reviews-box">
+        <h2>Reseñas Recientes</h2>
+        <!-- Reviews will be dynamically loaded here -->
+    </div>
+
+    <!-- Modal del Calendario -->
+    <div id="calendarModal" class="modal">
+        <div class="modal-content">
+            <header class="calendar">
+                <span class="close" id="close-calendar">&times;</span>
+                <span class="maximize" id="maximize-calendar">&#x2610;</span>
+                <span class="minimize" id="minimize-calendar">&#x2750;</span>
+                <h1 id="calendar-title">Junio 2024</h1>
+            </header>
+            <table id="calendar-table">
+                <thead>
+                    <tr>
+                        <th>Lun</th>
+                        <th>Mar</th>
+                        <th>Mié</th>
+                        <th>Jue</th>
+                        <th>Vie</th>
+                        <th>Sáb</th>
+                        <th>Dom</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Días del mes se insertarán aquí -->
+                </tbody>
+            </table>
+            <div class="navigation-buttons">
+                <button id="prevMonth">Mes Anterior</button>
+                <button id="nextMonth">Mes Siguiente</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para las citas del día -->
+    <div id="dayModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="close-day">&times;</span>
+            <h2>Citas del Día</h2>
+            <div id="day-appointments">
+                <!-- Las citas del día se mostrarán aquí -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let initialDashboardContent;
+    
+        document.addEventListener('DOMContentLoaded', () => {
+            initialDashboardContent = getDashboardContent();
+            loadSection('dashboard', 'Dashboard');
+            loadReviews();
+    
+            document.getElementById('toggle-sidebar').addEventListener('click', toggleSidebar);
+            document.getElementById('logout-btn').addEventListener('click', logout);
+    
+            // Asignar eventos de clic a todos los enlaces del menú
+            document.querySelectorAll('.menu a').forEach(item => {
+                item.addEventListener('click', event => {
+                    event.preventDefault();
+                    const section = item.getAttribute('data-section');
+                    const sectionName = item.querySelector('span') ? item.querySelector('span').innerText.trim() : null;
+    
+                    loadSection(section, sectionName || section);
+                });
+            });
+    
+            // Asignar eventos de clic a los íconos del menú, especialmente cuando el sidebar está colapsado
+            document.querySelectorAll('.menu i').forEach(icon => {
+                icon.addEventListener('click', event => {
+                    event.preventDefault();
+                    const section = icon.getAttribute('data-section');
+                    const sectionName = icon.parentElement.querySelector('span') ? icon.parentElement.querySelector('span').innerText.trim() : null;
+    
+                    loadSection(section, sectionName || section);
+                });
+            });
+    
+            document.getElementById('close-calendar').addEventListener('click', closeCalendarModal);
+            document.getElementById('maximize-calendar').addEventListener('click', toggleFullScreen);
+            document.getElementById('minimize-calendar').addEventListener('click', minimizeModal);
+    
+            updateCalendar(); // Inicializar el calendario
+        });
+    
+        function updateHeaderTitle(title) {
+            const headerTitle = document.getElementById('header-title');
+            if (headerTitle) {
+                headerTitle.textContent = title;
+            }
+        }
+    
+        async function loadSection(section, title) {
+            const content = document.getElementById('content');
+    
+            if (section === 'dashboard') {
+                content.innerHTML = initialDashboardContent;
+                updateHeaderTitle(title);
+                return;
+            }
+    
+            try {
+                const response = await fetch(`/${section}/`);
+                if (response.ok) {
+                    const html = await response.text();
+                    content.innerHTML = html;
+                    updateHeaderTitle(title);
+                    if (section === 'chatbot') {
+                        loadChatbotScript();
+                    }
+                } else {
+                    content.innerHTML = '<p>Error al cargar la sección.</p>';
+                }
+            } catch (error) {
+                content.innerHTML = '<p>Error al cargar la sección.</p>';
+            }
+        }
+    
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const mainContent = document.querySelector('.main-content');
+            const container = document.querySelector('.container');
+            const headerContent = document.querySelector('.header-content');
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('collapsed');
+            container.classList.toggle('collapsed');
+            headerContent.classList.toggle('collapsed');
+    
+            const logo = document.querySelector('.sidebar .logo');
+            const reviewsBox = document.getElementById('reviews-box');
+            if (sidebar.classList.contains('collapsed')) {
+                logo.src = "{% static 'assets/logo2.png' %}";
+                reviewsBox.style.display = 'block';
+                setTimeout(() => {
+                    reviewsBox.style.right = '10px';
+                }, 10);
+            } else {
+                logo.src = "{% static 'assets/logo.png' %}";
+                reviewsBox.style.right = '-270px';
+                setTimeout(() => {
+                    reviewsBox.style.display = 'none';
+                }, 300);
+            }
+        }
+    
+        function toggleSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.style.display = section.style.display === 'none' || section.style.display === '' ? 'block' : 'none';
+            }
+        }
+    
+        function getDashboardContent() {
+            return `
+                <div class="section notifications">
+                    <h2 onclick="toggleSection('notifications-content')">Notificaciones Recientes</h2>
+                    <div id="notifications-content" class="section-content">
+                        <div class="notification-item">
+                            <p><strong>Nueva Cita Programada:</strong> Tienes una nueva cita con el cliente Juan Pérez el 15 de junio a las 10:00 AM.</p>
+                            <p><small>Hace 2 horas</small></p>
+                        </div>
+                        <div class="notification-item">
+                            <p><strong>Actualización de Servicio:</strong> El servicio de atención al cliente ha sido actualizado con nuevas funcionalidades.</p>
+                            <p><small>Ayer</small></p>
+                        </div>
+                        <div class="notification-item">
+                            <p><strong>Recordatorio:</strong> Recuerda configurar tus preferencias de notificación en la sección de configuración.</p>
+                            <p><small>Hace 3 días</small></p>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="section overview">
+                    <h2 onclick="toggleSection('overview-content')">Resumen del Tablero</h2>
+                    <div id="overview-content" class="section-content">
+                        <div class="user-summary">
+                            <p><strong>Total de Las Citas:</strong> 25</p>
+                            <p><strong>Tareas Pendientes:</strong> 5</p>
+                            <p><strong>Interacciones Recientes:</strong> 12</p>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="section tips">
+                    <h2 onclick="toggleSection('tips-content')">Consejos y Recomendaciones</h2>
+                    <div id="tips-content" class="section-content">
+                        <div class="tip-item">
+                            <p><strong>Consejo:</strong> Utiliza la función de recordatorios para no olvidar tus citas importantes.</p>
+                        </div>
+                        <div class="tip-item">
+                            <p><strong>Mejores Prácticas:</strong> Configura tus servicios según las necesidades de tus clientes para mejorar la satisfacción.</p>
+                        </div>
+                        <div class="tip-item">
+                            <p><strong>Destacado:</strong> Explora las nuevas funcionalidades del chatbot para una mejor interacción con los clientes.</p>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="section quick-actions">
+                    <h2 onclick="toggleSection('actions-content')">Acciones Rápidas</h2>
+                    <div id="actions-content" class="section-content">
+                        <div class="action-item">
+                            <p><a href="#" onclick="loadSection('appointments', 'Las Citas')">Programar una Nueva Cita</a></p>
+                        </div>
+                        <div class="action-item">
+                            <p><a href="#" onclick="loadSection('reports', 'Reportes')">Ver Reportes</a></p>
+                        </div>
+                        <div class="action-item">
+                            <p><a href="#" onclick="loadSection('settings', 'Configuración')">Configurar Servicios</a></p>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="section user-specific">
+                    <h2 onclick="toggleSection('user-content')">Contenido Personalizado</h2>
+                    <div id="user-content" class="section-content">
+                        <div class="user-summary">
+                            <p><strong>Bienvenido, {{ user.first_name }}!</strong></p>
+                            <p>Última actividad: {{ user.last_login }}</p>
+                            <p><strong>Próximos Eventos:</strong></p>
+                            <ul>
+                                <li>Cita con María López el 20 de junio a las 3:00 PM.</li>
+                                <li>Reunión con el equipo el 22 de junio a las 11:00 AM.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    
+        async function loadReviews() {
+            try {
+                const response = await fetch('/reviews/');
+                if (response.ok) {
+                    const reviews = await response.json();
+                    const reviewsBox = document.getElementById('reviews-box');
+                    reviewsBox.innerHTML = '<h2>Reseñas Recientes</h2>';
+                    reviews.forEach(review => {
+                        const reviewItem = document.createElement('div');
+                        reviewItem.className = 'review-item';
+                        reviewItem.innerHTML = `
+                            <p><strong>${review.user}:</strong> ${review.comment}</p>
+                            <p><small>${new Date(review.date).toLocaleString()}</small></p>
+                        `;
+                        reviewsBox.appendChild(reviewItem);
+                    });
+                } else {
+                    console.error('Error loading reviews');
+                }
+            } catch (error) {
+                console.error('Error loading reviews', error);
+            }
+        }
+    
+        async function logout() {
+            try {
+                const response = await fetch("{% url 'logout' %}", {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    }
+                });
+                if (response.ok) {
+                    window.location.href = '/';
+                } else {
+                    alert('Error al cerrar sesión');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error al cerrar sesión');
+            }
+        }
+    
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    
+        function updateCalendar() {
+            const calendarTitle = document.getElementById('calendar-title');
+            const calendarTable = document.getElementById('calendar-table').getElementsByTagName('tbody')[0];
+            const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+            let currentMonth = new Date().getMonth();
+            let currentYear = new Date().getFullYear();
+    
+            function renderCalendar() {
+                calendarTable.innerHTML = '';
+                calendarTitle.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+    
+                const firstDay = new Date(currentYear, currentMonth, 1);
+                const lastDay = new Date(currentYear, currentMonth + 1, 0);
+    
+                const daysInWeek = 7;
+                let date = new Date(firstDay);
+                date.setDate(date.getDate() - date.getDay());
+    
+                while (date <= lastDay || date.getDay() !== 0) {
+                    const row = document.createElement('tr');
+                    for (let i = 0; i < daysInWeek; i++) {
+                        const cell = document.createElement('td');
+                        if (date.getMonth() === currentMonth) {
+                            cell.textContent = date.getDate();
+                            cell.addEventListener('click', () => openDayModal(date));
+                            if (date.toDateString() === new Date().toDateString()) {
+                                cell.classList.add('today');
+                            }
+                        } else {
+                            cell.textContent = '';
+                        }
+                        row.appendChild(cell);
+                        date.setDate(date.getDate() + 1);
+                    }
+                    calendarTable.appendChild(row);
+                }
+            }
+    
+            document.getElementById('prevMonth').addEventListener('click', function() {
+                if (currentMonth === 0) {
+                    currentMonth = 11;
+                    currentYear--;
+                } else {
+                    currentMonth--;
+                }
+                renderCalendar();
+            });
+    
+            document.getElementById('nextMonth').addEventListener('click', function() {
+                if (currentMonth === 11) {
+                    currentMonth = 0;
+                    currentYear++;
+                } else {
+                    currentMonth++;
+                }
+                renderCalendar();
+            });
+    
+            renderCalendar();
+        }
+    
+        function closeCalendarModal() {
+            const modal = document.getElementById('calendarModal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+    
+        function toggleFullScreen() {
+            const modalContent = document.querySelector('.modal-content');
+            if (modalContent) {
+                modalContent.classList.toggle('fullscreen');
+            }
+        }
+    
+        function minimizeModal() {
+            const modalContent = document.querySelector('.modal-content');
+            if (modalContent) {
+                modalContent.style.height = '300px'; // Ajusta según sea necesario
+                modalContent.style.width = '600px'; // Ajusta según sea necesario
+            }
+        }
+    
+        function openDayModal(date) {
+            const modal = document.getElementById('dayModal');
+            const dayAppointments = document.getElementById('day-appointments');
+            if (modal && dayAppointments) {
+                modal.style.display = 'block';
+                dayAppointments.innerHTML = `<p>Citas para el ${date.toDateString()}</p>`;
+                // Añadir lógica para cargar citas específicas para el día si es necesario
+            }
+        }
+    
+        // Cargar chatbot.js aquí para asegurar que se cargue después de que el DOM esté listo
+        function loadChatbotScript() {
+            const script = document.createElement('script');
+            script.src = "{% static 'assets/js/chatbot.js' %}";
+            script.onload = function() {
+                console.log('Chatbot script loaded');
+            };
+            script.onerror = function() {
+                console.error('Error loading the chatbot script');
+            };
+            document.body.appendChild(script);
+        }
+    </script>
+    

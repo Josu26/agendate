@@ -1,0 +1,595 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgenDate</title>
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins&display=swap">
+    <style>
+        /* Estilos generales */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        :root {
+            --primary-color: #c6c3c3;
+            --second-color: #ffffff;
+            --black-color: #000000;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            background-image: url("{% static 'assets/background.png' %}");
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            backdrop-filter: blur(0px);
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--second-color);
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+        }
+
+        header img {
+            height: 50px;
+        }
+
+        nav {
+            position: relative;
+        }
+
+        .menu {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: 20px;
+        }
+
+        .menu li {
+            position: relative;
+        }
+
+        .menu li a {
+            text-decoration: none;
+            color: #333;
+            padding: 10px 20px;
+            display: block;
+            transition: transform 0.2s;
+        }
+
+        .menu li a:hover {
+            transform: scale(1.1);
+        }
+
+        .menu li ul {
+            list-style: none;
+            position: absolute;
+            top: 58px;
+            left: 0;
+            margin: 0;
+            padding: 0;
+            visibility: hidden;
+            opacity: 0;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+            transition: visibility 0s linear 0.3s, opacity 0.3s linear;
+        }
+
+        .menu li:hover > ul,
+        .menu li ul:hover {
+            visibility: visible;
+            opacity: 1;
+            transition-delay: 0s;
+        }
+
+        .menu li ul li a {
+            padding: 10px 20px;
+            white-space: nowrap;
+        }
+
+        .wrapper {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: -50px;
+        }
+
+        .form-container {
+            display: none;
+            position: relative;
+            width: 90%;
+            max-width: 450px;
+            backdrop-filter: blur(25px);
+            border: 2px solid var(--primary-color);
+            border-radius: 15px;
+            padding: 5em 2.5em 2.5em 2.5em;
+            color: var(--second-color);
+            box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-container.active {
+            display: block;
+        }
+
+        .form-header {
+            position: absolute;
+            top: 0px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--primary-color);
+            width: 140px;
+            height: 70px;
+            border-radius: 0 0 20px 20px;
+        }
+
+        .form-header span {
+            font-size: 30px;
+            color: var(--black-color);
+        }
+
+        .form-header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -30px;
+            width: 30px;
+            height: 30px;
+            border-top-right-radius: 50%;
+            background: transparent;
+            box-shadow: 15px 0 0 0 var(--primary-color);
+        }
+
+        .form-header::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: -30px;
+            width: 30px;
+            height: 30px;
+            border-top-left-radius: 50%;
+            background: transparent;
+            box-shadow: -15px 0 0 0 var(--primary-color);
+        }
+
+        .input_box {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            margin: 20px 0;
+        }
+
+        .input-field {
+            width: 100%;
+            height: 55px;
+            font-size: 16px;
+            background: transparent;
+            color: var(--second-color);
+            padding: 0 20px;
+            border: 2px solid var(--primary-color);
+            border-radius: 30px;
+            outline: none;
+        }
+
+        .label {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            transition: 0.2s;
+        }
+
+        .input-field:focus ~ .label,
+        .input-field:valid ~ .label {
+            top: -10px;
+            left: 20px;
+            font-size: 14px;
+            background-color: var(--primary-color);
+            border-radius: 30px;
+            color: var(--black-color);
+            padding: 0 10px;
+        }
+
+        .icon {
+            position: absolute;
+            top: 18px;
+            right: 25px;
+            font-size: 20px;
+        }
+
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            font-size: 15px;
+        }
+
+        .input-submit {
+            width: 100%;
+            height: 50px;
+            background: #ececec;
+            font-size: 16px;
+            font-weight: 500;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .input-submit:hover {
+            background: var(--second-color);
+        }
+
+        .register {
+            text-align: center;
+        }
+
+        .register a {
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .background {
+            background-image: url("{% static 'assets/background.png' %}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: fixed;
+            top: -20px;
+            left: -20px;
+            bottom: -20px;
+            width: 105%;
+            height: 105%;
+            z-index: -1;
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+
+        footer {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 25px;
+            padding: 10px 20px;
+            text-align: center;
+            box-shadow: 0 -10px 15px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 1200px;
+            margin: 5px auto;
+            z-index: 1;
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        @media (max-width: 600px) {
+            header {
+                flex-direction: column;
+            }
+
+            .wrapper {
+                padding: 0 10px;
+                margin-top: 0;
+            }
+
+            .form-container {
+                padding: 3em 1.5em 1.5em 1.5em;
+            }
+        }
+
+        #loading-spinner {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+        }
+
+        .spinner {
+            border: 12px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 12px solid #3498db;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background"></div>
+    <header>
+        <img src="{% static 'assets/logo.png' %}" alt="Logo">
+        <nav>
+            <ul class="menu">
+                <li><a href="#">Inicio</a></li>
+                <li><a href="#">Servicios</a></li>
+                <li><a href="#">Nosotros</a></li>
+                <li><a href="#">Contacto</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="wrapper">
+        <!-- Formulario de Login -->
+        <div class="form-container active" id="login-container">
+            <div class="form-header">
+                <span>LOGIN</span>
+            </div>
+            <form method="post" id="login-form">
+                {% csrf_token %}
+                <div class="input_box">
+                    <input type="text" id="login-username-or-email" name="username_or_email" class="input-field" required>
+                    <label for="login-username-or-email" class="label">Usuario o correo electrónico</label>
+                    <i class="bx bx-user icon"></i>
+                </div>
+                <div class="input_box">
+                    <input type="password" id="login-password" name="password" class="input-field" required>
+                    <label for="login-password" class="label">Contraseña</label>
+                    <i class="bx bx-lock-alt icon"></i>
+                </div>
+                <div class="remember-forgot">
+                    <a href="#" id="forgot-password-link">Olvidé mi contraseña</a>
+                </div>
+                <div class="input_box">
+                    <input type="submit" class="input-submit" value="Iniciar sesión">
+                </div>
+            </form>
+            <div class="register">
+                <span>¿No tienes una cuenta? <a href="#" id="register-link">Regístrate</a></span>
+            </div>
+        </div>
+
+        <!-- Formulario de Registro -->
+        <div class="form-container" id="register-container">
+            <div class="form-header">
+                <span>REGISTRO</span>
+            </div>
+            <form method="post" id="register-form">
+                {% csrf_token %}
+                <div class="input_box">
+                    <input type="text" id="register-username" name="username" class="input-field" required>
+                    <label for="register-username" class="label">Nombre de usuario</label>
+                    <i class="bx bx-user icon"></i>
+                </div>
+                <div class="input_box">
+                    <input type="email" id="register-email" name="email" class="input-field" required>
+                    <label for="register-email" class="label">Correo electrónico</label>
+                    <i class="bx bx-envelope icon"></i>
+                </div>
+                <div class="input_box">
+                    <input type="password" id="register-password" name="password" class="input-field" required>
+                    <label for="register-password" class="label">Contraseña</label>
+                    <i class="bx bx-lock-alt icon"></i>
+                </div>
+                <div class="input_box">
+                    <input type="password" id="register-confirm-password" name="confirm_password" class="input-field" required>
+                    <label for="register-confirm-password" class="label">Confirmar contraseña</label>
+                    <i class="bx bx-lock-alt icon"></i>
+                </div>
+                <div class="input_box">
+                    <input type="submit" class="input-submit" value="Registrarse">
+                </div>
+            </form>
+            <div class="register">
+                <span>¿Ya tienes una cuenta? <a href="#" id="login-link">Inicia sesión</a></span>
+            </div>
+        </div>
+
+        <!-- Formulario de Recuperación de Contraseña -->
+        <div class="form-container" id="forgot-password-container">
+            <div class="form-header">
+                <span>RECUPERAR CONTRASEÑA</span>
+            </div>
+            <form method="post" id="forgot-password-form">
+                {% csrf_token %}
+                <div class="input_box">
+                    <input type="email" id="forgot-password-email" name="email" class="input-field" required>
+                    <label for="forgot-password-email" class="label">Correo electrónico</label>
+                    <i class="bx bx-envelope icon"></i>
+                </div>
+                <div class="input_box">
+                    <input type="submit" class="input-submit" value="Recuperar Contraseña">
+                </div>
+            </form>
+            <div class="register">
+                <span>¿Recordaste tu contraseña? <a href="#" id="login-link-from-forgot">Inicia sesión</a></span>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2024 AgenDate. Todos los derechos reservados.
+    </footer>
+
+    <!-- Rueda de proceso -->
+    <div id="loading-spinner" style="display: none;">
+        <div class="spinner"></div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+    
+        const firebaseConfig = {
+            apiKey: "AIzaSyAynUFmWEJHM_rIpfMLV65ze_f9BEsI-0c",
+  authDomain: "focal-elf-388317.firebaseapp.com",
+  databaseURL: "https://focal-elf-388317-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "focal-elf-388317",
+  storageBucket: "focal-elf-388317.appspot.com",
+  messagingSenderId: "975091590456",
+  appId: "1:975091590456:web:b1b76a1068a77e48770dcd"
+
+        };
+
+        const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    document.getElementById('register-link').addEventListener('click', showRegister);
+    document.getElementById('login-link').addEventListener('click', showLogin);
+    document.getElementById('forgot-password-link').addEventListener('click', showForgotPassword);
+    document.getElementById('login-link-from-forgot').addEventListener('click', showLogin);
+
+    function showLoadingSpinner() {
+        document.getElementById('loading-spinner').style.display = 'block';
+    }
+
+    function hideLoadingSpinner() {
+        document.getElementById('loading-spinner').style.display = 'none';
+    }
+
+    async function loginWithUsernameOrEmail(usernameOrEmail, password) {
+        let email = usernameOrEmail;
+
+        if (!usernameOrEmail.includes('@')) {
+            const userDoc = await getDoc(doc(db, "users", usernameOrEmail));
+            if (userDoc.exists()) {
+                email = userDoc.data().email;
+            } else {
+                throw new Error('Usuario no encontrado');
+            }
+        }
+
+        try {
+            showLoadingSpinner();
+            await signInWithEmailAndPassword(auth, email, password);
+            window.location.href = '/dashboard';
+        } catch (error) {
+            alert(error.message);
+            hideLoadingSpinner();
+        }
+    }
+
+    async function registerWithUsernameAndEmail(username, email, password) {
+        try {
+            showLoadingSpinner();
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            await setDoc(doc(db, "users", username), { email });
+            window.location.href = '/dashboard';
+        } catch (error) {
+            alert(error.message);
+            hideLoadingSpinner();
+        }
+    }
+
+    async function forgotPassword(email) {
+        try {
+            showLoadingSpinner();
+            await sendPasswordResetEmail(auth, email);
+            alert('Correo de recuperación enviado. Por favor revisa tu bandeja de entrada.');
+            hideLoadingSpinner();
+            showLogin();
+        } catch (error) {
+            alert(error.message);
+            hideLoadingSpinner();
+        }
+    }
+
+    document.getElementById('login-form').addEventListener('submit', async function(event) {
+        event.preventDefault();
+        const usernameOrEmail = document.getElementById('login-username-or-email').value;
+        const password = document.getElementById('login-password').value;
+
+        try {
+            await loginWithUsernameOrEmail(usernameOrEmail, password);
+        } catch (error) {
+            alert(error.message);
+        }
+    });
+
+    document.getElementById('register-form').addEventListener('submit', async function(event) {
+        event.preventDefault();
+        const username = document.getElementById('register-username').value;
+        const email = document.getElementById('register-email').value;
+        const password = document.getElementById('register-password').value;
+        const confirmPassword = document.getElementById('register-confirm-password').value;
+
+        if (password !== confirmPassword) {
+            alert("Las contraseñas no coinciden");
+            return;
+        }
+
+        try {
+            await registerWithUsernameAndEmail(username, email, password);
+        } catch (error) {
+            alert(error.message);
+        }
+    });
+
+    document.getElementById('forgot-password-form').addEventListener('submit', async function(event) {
+        event.preventDefault();
+        const email = document.getElementById('forgot-password-email').value;
+
+        try {
+            await forgotPassword(email);
+        } catch (error) {
+            alert(error.message);
+        }
+    });
+
+    // Función para mostrar el formulario de registro y ocultar el de login
+    function showRegister() {
+        document.getElementById('login-container').classList.remove('active');
+        document.getElementById('register-container').classList.add('active');
+        document.getElementById('forgot-password-container').classList.remove('active');
+    }
+
+    // Función para mostrar el formulario de login y ocultar el de registro
+    function showLogin() {
+        document.getElementById('register-container').classList.remove('active');
+        document.getElementById('login-container').classList.add('active');
+        document.getElementById('forgot-password-container').classList.remove('active');
+    }
+
+    // Función para mostrar el formulario de recuperación de contraseña y ocultar el de login
+    function showForgotPassword() {
+        document.getElementById('login-container').classList.remove('active');
+        document.getElementById('forgot-password-container').classList.add('active');
+        document.getElementById('register-container').classList.remove('active');
+    }
+</script>
+</body>
+</html>

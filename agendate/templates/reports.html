@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports - AgenDate</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: "Poppins", sans-serif;
+            background-color: #f0f0f0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .content-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: 73vh;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .reports-container {
+            width: 100%;
+            max-width: 700px; 
+            height: 400px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            box-sizing: border-box;
+            margin-top: 10px;
+            overflow-y: auto;
+        }
+
+        header {
+            background-color: #007bff;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .report {
+            background-color: white;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .report h3 {
+            margin-bottom: 5px;
+        }
+
+        .reports-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .reports-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .reports-container::-webkit-scrollbar-thumb {
+            background: #888;
+        }
+
+        .reports-container::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="content-container">
+        <div class="reports-container">
+            <header>
+                <h1>Reports</h1>
+            </header>
+            <div class="report">
+                <h3>Report Title</h3>
+                <p>Details of the report...</p>
+            </div>
+            <!-- Repeat for each report -->
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - AgenDate</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: "Poppins", sans-serif;
+            background-color: #f0f0f0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .content-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: 73vh;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .settings-container {
+            width: 100%;
+            max-width: 700px;
+            height: 400px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            box-sizing: border-box;
+            margin-top: 10px;
+            overflow-y: auto;
+        }
+
+        header {
+            background-color: #007bff;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .setting-item {
+            background-color: white;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .setting-item label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .setting-item input, .setting-item select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        .settings-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .settings-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .settings-container::-webkit-scrollbar-thumb {
+            background: #888;
+        }
+
+        .settings-container::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="content-container">
+        <div class="settings-container">
+            <header>
+                <h1>Settings</h1>
+            </header>
+            <div class="setting-item">
+                <label for="setting1">Setting 1</label>
+                <input type="text" id="setting1" name="setting1">
+            </div>
+            <div class="setting-item">
+                <label for="setting2">Setting 2</label>
+                <select id="setting2" name="setting2">
+                    <option value="option1">Option 1</option>
+                    <option value="option2">Option 2</option>
+                    <option value="option3">Option 3</option>
+                </select>
+            </div>
+            <!-- Add more settings as needed -->
+        </div>
+    </div>
+</body>
+</html>
